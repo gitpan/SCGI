@@ -1,0 +1,10 @@
+MANIFEST
+README
+META.yml
+lib/SCGI/Request.pm
+lib/SCGI.pm
+Build.PL
+t/blocking.t
+t/non-blocking.t
+examples/blocking.pl
+examples/non_blocking.pl

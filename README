@@ -1,0 +1,25 @@
+SCGI - The Perl SCGI server library.
+
+INSTALATION
+
+Issue the following commands:
+
+perl Build.PL
+./Build
+./Build test
+./Build install
+
+COPYRIGHT
+
+Copyright 2005 Viper Code Limited. All rights reserved.
+
+LICENSE
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+CONTACT
+
+Thomas Yandell
+tom+scgi@vipercode.com
+
