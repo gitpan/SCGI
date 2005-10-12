@@ -1,0 +1,10 @@
+0.6
+
+  - added Test::Pod and Test::Pod::Coverage tests.
+
+0.4 2005-10-12
+
+ - blocking is now a named parameter to new (old calling style is deprecated and will produce a warning, will be removed in next version). Blocking is still false by default.
+ - sysread is now used when blocking is not set.
+
+0.2 - Initial release

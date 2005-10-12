@@ -41,7 +41,7 @@ sub read_env {
   $this->{env_length_buffer} ||= '';
   $this->{env_buffer} ||= '';
   unless ($this->{env_length_read}) {
-    my $bytes_read = read $this->connection, my $buffer, 14;
+    my $bytes_read = sysread $this->connection, my $buffer, 14;
     die "read error: $!" unless defined $bytes_read || $! == EAGAIN;
     return unless $bytes_read;
     if ($buffer =~ m{ ^ (\d+) : (.*) $ }osx) {
@@ -63,7 +63,7 @@ sub read_env {
   }
   my $left_to_read = $this->{env_length_buffer} - length($this->{env_buffer});
   my $buffer = '';
-  my $read = read $this->connection, $buffer, $left_to_read + 1;
+  my $read = sysread $this->connection, $buffer, $left_to_read + 1;
   die "read error: $!" unless defined $read || $! == EAGAIN;
   return unless $read;
   if ($read == $left_to_read + 1) {

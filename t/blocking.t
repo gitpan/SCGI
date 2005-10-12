@@ -39,7 +39,7 @@ for my $test_request (1, 0) {
       LocalAddr => 'localhost:9000',
     ) or die "cannot bind to port 9000: $!";
 
-    my $scgi = SCGI->new($socket, 1);
+    my $scgi = SCGI->new($socket, blocking => 1);
 
     local $SIG{USR1} = sub {
       $socket->close;
@@ -67,7 +67,8 @@ for my $test_request (1, 0) {
 
       $request->connection->print($test->{response});
       $request->close;
-      $test_number++;
+      # don't wait for accept to return false as it creates warnings in IO::Handle
+      last if ++$test_number == @tests;
     }
 
     if ($child_ppid) {
@@ -80,7 +81,7 @@ for my $test_request (1, 0) {
   elsif (($child_ppid ? 1 : 0) != ($test_request ? 1 : 0)) {
   
     while (! $ready) {
-      sleep 1;
+      select(undef, undef, undef, 0.1);
     }
   
     for my $test_number (0..$#tests) {

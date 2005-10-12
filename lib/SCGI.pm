@@ -3,9 +3,11 @@ package SCGI;
 use strict;
 use warnings;
 
-our $VERSION = 0.2;
+our $VERSION = 0.4;
 
 use SCGI::Request;
+
+use Carp;
 
 =head1 NAME
 
@@ -23,7 +25,7 @@ This module is for implementing an SCGI interface for an application server.
   my $socket = IO::Socket::INET->new(Listen => 5, ReuseAddr => 1, LocalPort => 8080)
     or die "cannot bind to port 8080: $!";
   
-  my $scgi = SCGI->new($socket);
+  my $scgi = SCGI->new($socket, blocking => 1);
   
   while (my $request = $scgi->accept) {
     $request->read_env;
@@ -37,13 +39,27 @@ This module is for implementing an SCGI interface for an application server.
 
 =item new
 
-Takes a socket and returns a new SCGI listener.
+Takes a socket followed by a set of options (key value pairs) and returns a new SCGI listener. Currently the only supported option is blocking, to indicate that the socket blocks and that the library should not treat it accordingly. By default blocking is false. (NOTE: blocking is now a named rather than positional parameter. Using as a positional parameter will produce a warning in this version and will throw an exception in the next version).
 
 =cut
 
 sub new {
-  my ($class, $socket, $blocking) = @_;
-  bless {socket => $socket, blocking => $blocking ? 1 : 0}, $class;
+  my ($class, $socket) = (shift, shift);
+  my %options;
+  if (@_ == 1) { # this will go away in the next release
+    warn "deprecated way of calling SCGI->new used. Parameters after socket are now named (use blocking => 1)";
+    $options{blocking} = shift() ? 1 : 0;
+  }
+  elsif (@_ % 2) {
+    croak "key without value passed to SCGI->new";
+  }
+  else {
+    %options = @_;
+  }
+  for my $option (keys %options) {
+    croak "unknown option $option" unless grep $_ eq $option, qw(blocking);
+  }
+  bless {socket => $socket, blocking => $options{blocking} ? 1 : 0}, $class;
 }
 
 =item accept
@@ -72,7 +88,7 @@ sub socket {
 
 =item blocking
 
-Returns true if socket should block.
+Returns true if it was indicated that the socket should be blocking when the SCGI object was created.
 
 =cut
 

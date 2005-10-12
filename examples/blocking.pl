@@ -13,7 +13,7 @@ my $socket = IO::Socket::INET->new(
   LocalPort => 9090
 ) or die "cannot bind to port 9090: $!";
 
-my $scgi = SCGI->new($socket, 1);
+my $scgi = SCGI->new($socket, blocking => 1);
 
 while (my $request = $scgi->accept) {
   $request->read_env;

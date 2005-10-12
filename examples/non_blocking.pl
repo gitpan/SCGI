@@ -30,7 +30,7 @@ sub accept {
   my $request = $scgi->accept;
   event_new(
     $request->socket,
-    EV_READ|EV_ONCE,
+    EV_READ|EVLOOP_ONCE,
     \&handle,
     $request,
   )->add;
