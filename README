@@ -9,9 +9,15 @@ perl Build.PL
 ./Build test
 ./Build install
 
+KNOWN ISSUES
+
+The SCGI Apache2 module had a bug (for me at least), which resulted in segmentation faults. This appeared after version 1.2 (the version in Debian Sarge) and was fixed in 1.10.
+
+The SCGI Apache2 module has a bug where certain headers can be repeated. This is still present in version 1.10. A patch has been accepted and this issue should be resolved in the next release. This modulenow issues a warning on a repeated header, rather than throwing an exception as in the previous version.
+
 COPYRIGHT
 
-Copyright 2005 Viper Code Limited. All rights reserved.
+Copyright 2005, 2006 Viper Code Limited. All rights reserved.
 
 LICENSE
 

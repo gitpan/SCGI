@@ -174,7 +174,7 @@ sub _decode_env {
   }msogcx or die "malformed CONTENT_LENGTH header";
   $env{CONTENT_LENGTH} = $1;
   while ($env_string =~ m{ ([^\0]+) \0 ([^\0]+) \0 }msogcx) {
-    die "repeated $1 header in env" if $env{$1};
+    warn "repeated $1 header in env" if $env{$1};
     $env{$1} = $2;
   }
   die "malformed header" unless pos $env_string = length $env_string;
@@ -229,7 +229,7 @@ Thomas Yandell L<mailto:tom+scgi@vipercode.com>
 
 =head1 COPYRIGHT
 
-Copyright 2005 Viper Code Limited. All rights reserved.
+Copyright 2005, 2006 Viper Code Limited. All rights reserved.
 
 =head1 LICENSE
 

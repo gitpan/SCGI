@@ -3,7 +3,7 @@ package SCGI;
 use strict;
 use warnings;
 
-our $VERSION = 0.4;
+our $VERSION = 0.6;
 
 use SCGI::Request;
 
@@ -30,7 +30,8 @@ This module is for implementing an SCGI interface for an application server.
   while (my $request = $scgi->accept) {
     $request->read_env;
     read $request->connection, my $body, $request->env->{CONTENT_LENGTH};
-    print $request->connection "HTTP/1.0 200 OK\r\nContent-Type: text/plain\r\n\r\nHello!\n";
+    # 
+    print $request->connection "Content-Type: text/plain\n\nHello!\n";
   }
 
 =head2 public methods
@@ -45,17 +46,9 @@ Takes a socket followed by a set of options (key value pairs) and returns a new 
 
 sub new {
   my ($class, $socket) = (shift, shift);
-  my %options;
-  if (@_ == 1) { # this will go away in the next release
-    warn "deprecated way of calling SCGI->new used. Parameters after socket are now named (use blocking => 1)";
-    $options{blocking} = shift() ? 1 : 0;
-  }
-  elsif (@_ % 2) {
-    croak "key without value passed to SCGI->new";
-  }
-  else {
-    %options = @_;
-  }
+  croak "key without value passed to SCGI->new"
+    if @_ % 2;
+  my %options = @_;
   for my $option (keys %options) {
     croak "unknown option $option" unless grep $_ eq $option, qw(blocking);
   }
@@ -103,13 +96,19 @@ __END__
 
 =back
 
+=head1 KNOWN ISSUES
+
+The SCGI Apache2 module had a bug (for me at least), which resulted in segmentation faults. This appeared after version 1.2 (the version in Debian Sarge) and was fixed in 1.10.
+
+The SCGI Apache2 module has a bug where certain headers can be repeated. This is still present in version 1.10. A patch has been accepted and this issue should be resolved in the next release. This modulenow issues a warning on a repeated header, rather than throwing an exception as in the previous version.
+
 =head1 AUTHOR
 
 Thomas Yandell L<mailto:tom+scgi@vipercode.com>
 
 =head1 COPYRIGHT
 
-Copyright 2005 Viper Code Limited. All rights reserved.
+Copyright 2005, 2006 Viper Code Limited. All rights reserved.
 
 =head1 LICENSE
 

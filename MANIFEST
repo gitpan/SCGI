@@ -5,6 +5,7 @@ META.yml
 lib/SCGI/Request.pm
 lib/SCGI.pm
 Build.PL
+Makefile.PL
 t/blocking.t
 t/non-blocking.t
 t/pod.t
